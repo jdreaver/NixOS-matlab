@@ -49,29 +49,28 @@ export MATLAB_ARCH=glnxa64
 
 # Run patchelf and substituteInPlace on various files in the output
 echo "Patching output..."
-substituteInPlace $out/bin/matlab \
-   --replace /bin/pwd $(type -P pwd)
 
-substituteInPlace $out/bin/activate_matlab.sh \
-   --replace /bin/pwd $(type -P pwd)
+REPLACE_FILES=(
+    $out/bin/matlab
+    $out/bin/activate_matlab.sh
+    $out/bin/mcc
+)
 
-substituteInPlace $out/bin/mcc \
-   --replace /bin/pwd $(type -P pwd)\
-   --replace /bin/echo $(type -P echo)\
+for f in ${REPLACE_FILES[*]}; do
+    substituteInPlace $f\
+        --replace /bin/pwd $(type -P pwd)\
+        --replace /bin/echo $(type -P echo)
+done
 
-patchelf --interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-  --set-rpath "$libPath:$(patchelf --print-rpath $out/bin/glnxa64/MATLAB)"\
-  --force-rpath $out/bin/glnxa64/MATLAB
+PATCH_FILES=(
+    $out/bin/glnxa64/MATLAB
+    $out/sys/java/jre/glnxa64/jre/bin/java
+    $out/bin/glnxa64/need_softwareopengl
+    $out/bin/glnxa64/mcc
+)
 
-patchelf --interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-  --set-rpath "$libPath:$(patchelf --print-rpath $out/sys/java/jre/glnxa64/jre/bin/java)"\
-  --force-rpath "$out/sys/java/jre/glnxa64/jre/bin/java"
-
-patchelf --interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-   "$out/bin/glnxa64/need_softwareopengl"
-
-patchelf --interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-  --set-rpath "$libPath:$(patchelf --print-rpath $out/bin/glnxa64/mcc)"\
-  --force-rpath $out/bin/glnxa64/mcc
-
-# echo "LD_LIBRARY_PATH=$libPath ./matlab" >> $out/bin/ld_matlab
+for f in ${PATCH_FILES[*]}; do
+    patchelf --interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
+       --set-rpath "$libPath:$(patchelf --print-rpath $f)"\
+       --force-rpath $f
+done
