@@ -41,3 +41,4 @@ and then type `wmname LG3D`. This works for a few java programs.
 * Test mcc, mbuild, and mex to make sure they can find gcc correctly.
 * Use requireFile instead of forcing the user to put their installer file in
   /tmp
+* Add builder for Matlab Compiler Runtime
