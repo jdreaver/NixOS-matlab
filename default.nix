@@ -23,9 +23,16 @@ stdenv.mkDerivation {
   fileInstallationKey = fileInstallationKey;
   activatedProducts = activatedProducts;
 
+  inherit gcc48;
+
+  buildInputs = [
+    gcc48
+    makeWrapper
+  ];
+
   libPath = stdenv.lib.makeLibraryPath [
-    mesa_glu
     ncurses
+    xorg.libXi
     xorg.libXext
     xorg.libXmu
     xorg.libXp

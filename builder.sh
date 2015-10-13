@@ -51,26 +51,43 @@ export MATLAB_ARCH=glnxa64
 echo "Patching output..."
 
 REPLACE_FILES=(
-    $out/bin/matlab
     $out/bin/activate_matlab.sh
+    $out/bin/matlab
+    $out/bin/mbuild
     $out/bin/mcc
+    $out/bin/mex
 )
 
 for f in ${REPLACE_FILES[*]}; do
     substituteInPlace $f\
         --replace /bin/pwd $(type -P pwd)\
         --replace /bin/echo $(type -P echo)
+    wrapProgram $f --set MATLAB_ARCH glnxa64
 done
 
 PATCH_FILES=(
     $out/bin/glnxa64/MATLAB
-    $out/sys/java/jre/glnxa64/jre/bin/java
-    $out/bin/glnxa64/need_softwareopengl
+    $out/bin/glnxa64/matlab_helper
     $out/bin/glnxa64/mcc
+    $out/bin/glnxa64/mbuildHelp
+    $out/bin/glnxa64/mex
+    $out/bin/glnxa64/need_softwareopengl
+    $out/sys/java/jre/glnxa64/jre/bin/java
 )
 
 for f in ${PATCH_FILES[*]}; do
     patchelf --interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
        --set-rpath "$libPath:$(patchelf --print-rpath $f)"\
        --force-rpath $f
+done
+
+
+# Set the correct path to gcc
+CC_FILES=(
+    $out/bin/mbuildopts.sh
+    $out/bin/mexopts.sh
+)
+for f in ${CC_FILES[*]}; do
+    substituteInPlace $f\
+        --replace "CC='gcc'" "CC='${gcc48}/bin/gcc'"
 done

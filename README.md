@@ -36,12 +36,8 @@ and then type `wmname LG3D`. This works for a few java programs.
 # TODO
 
 * Don't require a tar file (allow zip)
-* Put installed packages in a list inside default.nix, instead of directly into
-  builder.sh. Add all packages and comment them all out except MATLAB.
 * Make configuration simple for users. Put all needed user info at the top of
   default.nix with comments and skeleton values.
-* Make a list of all libs and binaries that need to be patched with patchelf,
-  and patch them in a for loop.
-* I can only get the GUI to work using by installing openjdk and setting the
-  `MATLAB_JAVA` environment variable to the jre path. We still need to fix the
-  packaged jre.
+* Test mcc, mbuild, and mex to make sure they can find gcc correctly.
+* Use requireFile instead of forcing the user to put their installer file in
+  /tmp
