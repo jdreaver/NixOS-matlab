@@ -20,10 +20,12 @@ destinationFolder=$out
 agreeToLicense=yes
 mode=silent
 fileInstallationKey=$fileInstallationKey
-product.MATLAB
-product.MATLAB_Compiler
 activationPropertiesFile=$_activation_file
 " >> $_input_file
+
+for product in $activatedProducts; do
+    echo product.$product >> $_input_file
+done
 
 echo "
 isSilent=True

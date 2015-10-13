@@ -4,6 +4,10 @@ let
   fileInstallationKey="XXXXX-XXXXX-XXXXX-XXXXX";
   version = "R2014b";
   filename = "MATLAB-Linux64.tar";
+  activatedProducts = [
+    "MATLAB"
+    "MATLAB_Compiler"
+  ];
 in
 
 stdenv.mkDerivation {
@@ -16,7 +20,8 @@ stdenv.mkDerivation {
   };
 
   licenseFile = ./license.lic;
-  fileInstallationKey=fileInstallationKey;
+  fileInstallationKey = fileInstallationKey;
+  activatedProducts = activatedProducts;
 
   libPath = stdenv.lib.makeLibraryPath [
     mesa_glu
