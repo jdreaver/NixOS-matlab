@@ -31,6 +31,7 @@ stdenv.mkDerivation {
   ];
 
   libPath = stdenv.lib.makeLibraryPath [
+    mesa_glu
     ncurses
     xorg.libXi
     xorg.libXext
